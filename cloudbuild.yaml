@@ -10,16 +10,7 @@ steps:
     args: ['app', 'deploy']
 timeout: '1600s'
 options:
-  logging: NONE
-
-
-
-
-
-
-
-
-
-
+  logging: CLOUD_LOGGING_ONLY
+#logsBucket: 'gs://my-project-cx-419900.appspot.com'
 
 

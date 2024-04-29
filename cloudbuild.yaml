@@ -1,8 +1,24 @@
+#steps:
+## Build step for running tests here
+#- name: 'gcr.io/cloud-builders/gcloud'
+#  args: ['app', 'deploy']
+#timeout: '1600s' # Example timeout setting
+#options:
+#  logging: CLOUD_LOGGING_ONLY
+#  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
+
 steps:
-# Build step for running tests here
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['app', 'deploy']
-timeout: '1600s' # Example timeout setting
+  - name: 'python'
+    entrypoint: 'pip'
+    args: ['install', '-r', 'requirements.txt']
+  # If have tests, include a step to run them here
+  # - name: 'python'
+  #   entrypoint: 'python'
+  #   args: ['-m', 'unittest']
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy']
+timeout: '1600s'
 options:
   logging: CLOUD_LOGGING_ONLY
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET

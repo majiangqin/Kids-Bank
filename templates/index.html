@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Bank</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+</head>
+<body>
+    <h1>Kids Bank</h1>
+    <div id="balance" aria-live="polite">Balance: $0</div>
+    <input type="number" id="amount" value="100">
+    <button onclick="deposit(Number(document.getElementById('amount').value))">Deposit</button>
+    <button onclick="withdraw(Number(document.getElementById('amount').value))">Withdraw</button>
+    <script src="{{url_for('static', filename='app.js')}}"></script>
+</body>
+</html>
+
+
+

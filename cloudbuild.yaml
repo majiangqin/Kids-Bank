@@ -10,6 +10,6 @@ steps:
     args: ['app', 'deploy']
 timeout: '1600s'
 options:
-  logging: GCS_AND_CLOUD_LOGGING
+  logging: 'GCS_AND_CLOUD_LOGGING'
 logsBucket: 'gs://my-project-cx-419900.appspot.com'
 

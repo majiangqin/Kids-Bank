@@ -11,6 +11,6 @@ steps:
 timeout: '1600s'
 options:
   logging: CLOUD_LOGGING_ONLY
-#logsBucket: 'gs://my-project-cx-419900.appspot.com'
+logsBucket: 'gs://my-project-cx-419900.appspot.com'
 
 

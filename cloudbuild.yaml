@@ -1,16 +1,19 @@
 steps:
-  - name: 'python'
+  # Use the official Python image to ensure pip is available
+  - name: 'python:3.9'
     entrypoint: 'pip'
     args: ['install', '-r', 'requirements.txt']
   # Uncomment and modify the next lines if you have tests to run
-  # - name: 'python'
+  # - name: 'python:3.9'
   #   entrypoint: 'python'
   #   args: ['-m', 'unittest discover']
-  - name: 'gcr.io/cloud-builders/gcloud'
+  # Use the official gcloud builder
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
     args: ['app', 'deploy']
 timeout: '1600s'
 options:
   logging: CLOUD_LOGGING_ONLY
-#logsBucket: 'gs://my-project-cx-419900.appspot.com'
+
 
 

@@ -1,16 +1,20 @@
+#steps:
+#  - name: 'python'
+#    entrypoint: 'pip'
+#    args: ['install', '-r', 'requirements.txt']
+#  # Uncomment and modify the next lines if you have tests to run
+#  # - name: 'python'
+#  #   entrypoint: 'python'
+#  #   args: ['-m', 'unittest discover']
+#  - name: 'gcr.io/cloud-builders/gcloud'
+#    args: ['app', 'deploy']
+#timeout: '1600s'
+#options:
+#  logging: CLOUD_LOGGING_ONLY
+##logsBucket: 'gs://my-project-cx-419900.appspot.com'
+
+
 steps:
-  - name: 'python'
-    entrypoint: 'pip'
-    args: ['install', '-r', 'requirements.txt']
-  # Uncomment and modify the next lines if you have tests to run
-  # - name: 'python'
-  #   entrypoint: 'python'
-  #   args: ['-m', 'unittest discover']
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
 timeout: '1600s'
-options:
-  logging: CLOUD_LOGGING_ONLY
-#logsBucket: 'gs://my-project-cx-419900.appspot.com'
-
-

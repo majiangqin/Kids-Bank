@@ -15,6 +15,32 @@
     <button onclick="deposit(Number(document.getElementById('amount').value))">Deposit</button>
     <button onclick="withdraw(Number(document.getElementById('amount').value))">Withdraw</button>
     <script src="{{url_for('static', filename='app.js')}}"></script>
+
+    <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+<script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+<df-messenger
+  project-id="my-project-cx-419900"
+  agent-id="da62cf2c-d360-4435-8360-3a670e5413a8"
+  language-code="en"
+  max-query-length="-1"
+  allow-feedback="all">
+  <df-messenger-chat-bubble
+   chat-title="">
+  </df-messenger-chat-bubble>
+</df-messenger>
+<style>
+  df-messenger {
+    z-index: 999;
+    position: fixed;
+    --df-messenger-font-color: #000;
+    --df-messenger-font-family: Google Sans;
+    --df-messenger-chat-background: #f3f6fc;
+    --df-messenger-message-user-background: #d3e3fd;
+    --df-messenger-message-bot-background: #fff;
+    bottom: 16px;
+    right: 16px;
+  }
+</style>
 </body>
 </html>
 

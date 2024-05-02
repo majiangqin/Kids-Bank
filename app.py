@@ -11,43 +11,60 @@ basic_auth = BasicAuth(app)
 @app.route('/webhook', methods=['POST'])
 @basic_auth.required
 def webhook():
-    # Your webhook logic here
-    return jsonify(message='This is a secure area')
+    req = request.get_json(force=True)
+    text_to_translate = req['queryResult']['parameters']['textToTranslate']
+    target_language = req['queryResult']['parameters']['language']
 
+    translated_text = translate_text(text_to_translate, target_language)
+    return jsonify(fulfillment_response={"messages": [{"text": {"text": [translated_text]}}]})
 
-@app.route('/translate', methods=['POST'])
-def translate_text():
-    data = request.json
-    # Extract text and target language from Dialogflow CX request
-    # Adjust the JSON path as needed based on your specific Dialogflow CX setup
-    text_to_translate = data['fulfillmentInfo']['text']
-    target_language = 'en-tw'  # Example: English to Twi
-
-    # GhanaNLP API request setup
+def translate_text(text, language_code):
+    # Assume you have the API URL and your API key for the GhanaNLP API
+    api_url = "https://translation-api.ghananlp.org/v1/translate"
     headers = {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache',
         'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
     }
     payload = {
-        'in': text_to_translate,
-        'lang': target_language
+        'in': text,
+        'lang': language_code
     }
+    response = requests.post(api_url, json=payload, headers=headers)
+    return response.json()['translatedText']
 
-    # Make the POST request to GhanaNLP API
-    response = requests.post('https://translation-api.ghananlp.org/v1/translate', json=payload, headers=headers)
-    translated_text = response.json()['translatedText']
-
-    # Prepare the response for Dialogflow CX
-    return jsonify({
-        'fulfillment_response': {
-            'messages': [{
-                'text': {
-                    'text': [translated_text]
-                }
-            }]
-        }
-    })
+# @app.route('/translate', methods=['POST'])
+# def translate_text():
+#     data = request.json
+#     # Extract text and target language from Dialogflow CX request
+#     # Adjust the JSON path as needed based on your specific Dialogflow CX setup
+#     text_to_translate = data['fulfillmentInfo']['text']
+#     target_language = 'en-tw'  # Example: English to Twi
+#
+#     # GhanaNLP API request setup
+#     headers = {
+#         'Content-Type': 'application/json',
+#         'Cache-Control': 'no-cache',
+#         'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
+#     }
+#     payload = {
+#         'in': text_to_translate,
+#         'lang': target_language
+#     }
+#
+#     # Make the POST request to GhanaNLP API
+#     response = requests.post('https://translation-api.ghananlp.org/v1/translate', json=payload, headers=headers)
+#     translated_text = response.json()['translatedText']
+#
+#     # Prepare the response for Dialogflow CX
+#     return jsonify({
+#         'fulfillment_response': {
+#             'messages': [{
+#                 'text': {
+#                     'text': [translated_text]
+#                 }
+#             }]
+#         }
+#     })
 
 
 # Route to serve the HTML page

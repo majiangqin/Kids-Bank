@@ -23,7 +23,7 @@ def translate_text(text, language_code):
     api_url = "https://translation-api.ghananlp.org/v1/translate"
     headers = {
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
+        'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b69'
     }
     payload = {
         'in': text,
@@ -44,7 +44,7 @@ def translate_text(text, language_code):
 #     headers = {
 #         'Content-Type': 'application/json',
 #         'Cache-Control': 'no-cache',
-#         'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
+#         'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b'
 #     }
 #     payload = {
 #         'in': text_to_translate,
@@ -80,7 +80,7 @@ def invoke_action(fulfillment, parameters):
     print("\n\n\n\n\n=========> CALL API ", fulfillment)
     if fulfillment == "GetWeather_fulfillment":
         city = next((p['value'] for p in parameters if p['name'] == "city"), None)
-        appid = "a363a549449568db4fe82c04a2a33c73"
+        appid = "a363a549449568db4"
         url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={appid}'
         try:
             result = requests.get(url)

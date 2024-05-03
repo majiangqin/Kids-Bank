@@ -32,40 +32,7 @@ def translate_text(text, language_code):
     response = requests.post(api_url, json=payload, headers=headers)
     return response.json()['translatedText']
 
-# @app.route('/translate', methods=['POST'])
-# def translate_text():
-#     data = request.json
-#     # Extract text and target language from Dialogflow CX request
-#     # Adjust the JSON path as needed based on your specific Dialogflow CX setup
-#     text_to_translate = data['fulfillmentInfo']['text']
-#     target_language = 'en-tw'  # Example: English to Twi
-#
-#     # GhanaNLP API request setup
-#     headers = {
-#         'Content-Type': 'application/json',
-#         'Cache-Control': 'no-cache',
-#         'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
-#     }
-#     payload = {
-#         'in': text_to_translate,
-#         'lang': target_language
-#     }
-#
-#     # Make the POST request to GhanaNLP API
-#     response = requests.post('https://translation-api.ghananlp.org/v1/translate', json=payload, headers=headers)
-#     translated_text = response.json()['translatedText']
-#
-#     # Prepare the response for Dialogflow CX
-#     return jsonify({
-#         'fulfillment_response': {
-#             'messages': [{
-#                 'text': {
-#                     'text': [translated_text]
-#                 }
-#             }]
-#         }
-#     })
-### Define a Route
+### Define a Route for weather
 @app.route('/my_webhook', methods=['POST'])
 def post_webhook_dialogflow():
     body = request.get_json(silent=True)

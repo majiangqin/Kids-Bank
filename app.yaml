@@ -1,9 +1,10 @@
 runtime: python39
-entrypoint: gunicorn -b :$PORT app:app
 
+entrypoint: gunicorn -b :$PORT --workers 3 --threads 2 app:app
 
 env_variables:
   FLASK_ENV: 'production'
+  APPID: 'a363a549449568db4fe82c04a2a33c73y'  # Securely store and access API keys
 
 handlers:
 - url: /static

@@ -1,6 +1,5 @@
-from flask import Flask, jsonify, request, render_template,Response
-import requests
-import json
+from flask import Flask, jsonify, request, render_template
+
 from flask_basicauth import BasicAuth
 
 app = Flask(__name__)
@@ -74,7 +73,6 @@ def post_webhook_dialogflow():
     parameters = []
     for key, value in body['sessionInfo']['parameters'].items():
         parameters.append({'name': key, 'value': value})
-
     msg = invoke_action(fulfillment, parameters)
     return answer_webhook(msg)
 
@@ -82,28 +80,32 @@ def invoke_action(fulfillment, parameters):
     print("\n\n\n\n\n=========> CALL API ", fulfillment)
     if fulfillment == "GetWeather_fulfillment":
         city = next((p['value'] for p in parameters if p['name'] == "city"), None)
-        appid = "a363a549449568db4fe82c04a2a33c73"  # Use environment variable in production
+        appid = "a363a549449568db4fe82c04a2a33c73"
         url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={appid}'
-        result = requests.get(url)
-        if result.status_code == 200:
-            weather = result.json()['weather'][0]['description']
-            return f"There is {weather} in {city}."
-        else:
-            return "Failed to fetch weather data."
+        try:
+            result = requests.get(url)
+            jsonResult = result.json()
+            if result.status_code == 200:
+                weatherCondition = jsonResult['weather'][0]['description']
+                reply = f"There is {weatherCondition} in {city}."
+                return reply
+            else:
+                return "Failed to retrieve the weather data."
+        except Exception as e:
+            return f"An error occurred: {str(e)}"
 
 def answer_webhook(msg):
-    response_content = {
+    message = {
         "fulfillment_response": {
-            "messages": [
-                {
-                    "text": {
-                        "text": [msg]
-                    }
+            "messages": [{
+                "text": {
+                    "text": [msg]
                 }
-            ]
+            }]
         }
     }
-    return Response(json.dumps(response_content), mimetype='application/json')
+    return Response(json.dumps(message), 200, mimetype='application/json')
+
 
 # Route to serve the HTML page
 @app.route('/')

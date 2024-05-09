@@ -18,16 +18,29 @@
 
     <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
 <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
-<df-messenger
+{#<df-messenger#}
+{#  project-id="my-project-cx-419900"#}
+{#  agent-id="da62cf2c-d360-4435-8360-3a670e5413a8"#}
+{#  language-code="en"#}
+{#  max-query-length="-1"#}
+{#  allow-feedback="all">#}
+{#  <df-messenger-chat-bubble#}
+{#   chat-title="">#}
+{#  </df-messenger-chat-bubble>#}
+{#</df-messenger>#}
+
+    <df-messenger
   project-id="my-project-cx-419900"
   agent-id="da62cf2c-d360-4435-8360-3a670e5413a8"
   language-code="en"
   max-query-length="-1"
   allow-feedback="all">
   <df-messenger-chat-bubble
-   chat-title="">
+   chat-title="Chat with us">
   </df-messenger-chat-bubble>
+        Chat
 </df-messenger>
+
 <style>
   df-messenger {
     z-index: 999;

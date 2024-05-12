@@ -45,6 +45,7 @@ def translate_text(text, language_code):
     api_url = "https://translation-api.ghananlp.org/v1/translate"
     headers = {
         'Content-Type': 'application/json',
+        'Cache - Control': 'no-cache'
         'Ocp-Apim-Subscription-Key': TRANSLATION_API_KEY
     }
     payload = {

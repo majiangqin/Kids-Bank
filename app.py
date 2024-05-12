@@ -3,7 +3,7 @@ import json
 import requests
 from flask_basicauth import BasicAuth
 import logging
-
+from config import TRANSLATION_API_KEY, WEATHER_API_KEY
 
 
 
@@ -13,8 +13,8 @@ app.config['BASIC_AUTH_PASSWORD'] = 'password'
 basic_auth = BasicAuth(app)
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG)
-
+logging.basicConfig(levg.DEBUG)
+el=loggin
 # define a route for translation
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -45,7 +45,7 @@ def translate_text(text, language_code):
     api_url = "https://translation-api.ghananlp.org/v1/translate"
     headers = {
         'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': '5ff73af047eb4ba6bd3b699b19f81cd0'
+        'Ocp-Apim-Subscription-Key': TRANSLATION_API_KEY
     }
     payload = {
         "in": text,
@@ -108,7 +108,7 @@ def invoke_action(fulfillment, parameters):
         if not city:
             return "City parameter is missing."
 
-        appid = "ff80bd9a5c6adcda12a1beb25b7a9cfa"
+        appid = WEATHER_API_KEY
         url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={appid}'
         try:
             result = requests.get(url)

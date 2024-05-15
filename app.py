@@ -5,6 +5,12 @@ from flask_basicauth import BasicAuth
 import logging
 from config import TRANSLATION_API_KEY, WEATHER_API_KEY
 
+from google.cloud import dialogflowcx_v3beta1 as dialogflow
+from google.api_core.exceptions import InvalidArgument
+from google.cloud.dialogflowcx_v3beta1.types import WebhookRequest, QueryResult
+from google.protobuf.struct_pb2 import Struct
+from google.protobuf.json_format import MessageToDict
+from google.protobuf.json_format import MessageToJson
 
 
 app = Flask(__name__)
@@ -13,19 +19,18 @@ app.config['BASIC_AUTH_PASSWORD'] = 'password'
 basic_auth = BasicAuth(app)
 
 # Configure logging
-logging.basicConfig(levg.DEBUG)
-el=loggin
+logging.basicConfig(level=logging.DEBUG)
+
 # define a route for translation
+
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    req = request.get_json(force=True)
+    req = request.get_json()
     if 'fulfillmentInfo' not in req or 'tag' not in req['fulfillmentInfo']:
         return jsonify({"error": "Invalid request, tag missing"}), 400
 
     tag = req['fulfillmentInfo']['tag']
-    parameters = req.get('queryResult', {}).get('parameters', {})
-    logging.debug(f"Request JSON: {req}")
-    logging.debug(f"Parameters extracted: {parameters}")
+    parameters = req.get('sessionInfo', {}).get('parameters', {})  # Correct parameters extraction
 
     if tag == "TranslateText_fulfillment":
         return handle_translate_request(parameters)
@@ -33,38 +38,40 @@ def webhook():
         return jsonify({"error": "Unknown tag"}), 400
 
 def handle_translate_request(parameters):
-    text = parameters.get('textToTranslate')  # Adjusted from 'text' to 'textToTranslate'
-    language_code = parameters.get('language')  # Adjusted from 'language_code' to 'language'
+    text = parameters.get('textToTranslate')
+    language_code = parameters.get('language')
     if not text or not language_code:
-        return jsonify({"error": "Missing text or language_code"}), 400
+        return jsonify({"error": "Missing text or language code"}), 400
+
+    # Check if the language code is valid
+    valid_languages = ['en', 'tw', 'gaa', 'ee', 'fat', 'dag', 'gur', 'yo', 'ki', 'luo', 'mer']
+    if language_code not in valid_languages:
+        return jsonify({"error": "Invalid language code"}), 400
+
     return translate_text(text, language_code)
-
-
 
 def translate_text(text, language_code):
     api_url = "https://translation-api.ghananlp.org/v1/translate"
     headers = {
         'Content-Type': 'application/json',
-        'Cache - Control': 'no-cache'
         'Ocp-Apim-Subscription-Key': TRANSLATION_API_KEY
     }
     payload = {
         "in": text,
-        "lang": f"en-{language_code}"
+        "lang": f"{language_code}-en"  # Assuming translation to English
     }
     try:
         response = requests.post(api_url, json=payload, headers=headers)
-        response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+        response.raise_for_status()
         response_json = response.json()
-        logging.debug(f"API response JSON: {response_json}")  # Log the complete API response
+        logging.debug(f"API response JSON: {response_json}")
 
-        # Handle response based on its actual format
-        if isinstance(response_json, str):  # If response is a string, directly use it
+        if isinstance(response_json, str):
             translated_text = response_json
-        elif 'translatedText' in response_json:  # If it's a JSON with 'translatedText'
+        elif 'translatedText' in response_json:
             translated_text = response_json['translatedText']
         else:
-            logging.error("Translation API did not return 'translatedText' or string.")
+            logging.error("Translation API did not return 'translatedText' or a direct string.")
             return jsonify({"error": "Translation failed"}), 500
 
         return jsonify({
@@ -80,8 +87,35 @@ def translate_text(text, language_code):
         logging.error(f"Error during translation API request: {e}")
         return jsonify({"error": str(e)}), 500
 
+def test_webhook():
+    try:
+        # Adjust the test payload to match how Dialogflow CX sends parameters
+        test_payload = {
+            "fulfillmentInfo": {
+                "tag": "TranslateText_fulfillment"
+            },
+            "sessionInfo": {  # Ensure parameters are nested within sessionInfo
+                "parameters": {
+                    "textToTranslate": "Hello, how are you?",
+                    "language": "tw"
+                }
+            }
+        }
 
+        # Using test_request_context to simulate a POST request
+        with app.test_request_context('/webhook', method='POST', json=test_payload):
+            response = webhook()
+            if isinstance(response, tuple):
+                response, status = response  # Handling the tuple response
+            else:
+                status = 200  # Default status if response isn't a tuple
 
+            # Extracting JSON data from the response
+            response_data = response.get_json()
+            print(response_data, status)
+
+    except Exception as e:
+        print(f"Error during webhook testing: {e}")
 
 
 
@@ -168,3 +202,4 @@ def withdraw():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    test_webhook()
